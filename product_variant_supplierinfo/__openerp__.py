@@ -16,5 +16,6 @@
         'views/product_template_view.xml',
     ],
     'installable': True,
+    "pre_init_hook": "create_product_column",
     "post_init_hook": "duplicate_supplierinfo_per_variant",
 }

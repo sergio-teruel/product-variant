@@ -6,6 +6,23 @@ from . import models
 from openerp import SUPERUSER_ID
 
 
+def create_product_column(cr):
+    """
+    Create column product_id to avoid error NOT NULL when installs
+    with data.
+    :param cr: database cursor
+    :return: void
+    """
+    cr.execute("ALTER TABLE product_supplierinfo "
+               "ADD COLUMN product_id integer;")
+
+    cr.execute("UPDATE product_supplierinfo psi "
+               "SET product_id = ("
+               "    SELECT pp.id FROM product_product pp "
+               "        WHERE pp.product_tmpl_id = psi.product_tmpl_id"
+               "        LIMIT 1);")
+
+
 def duplicate_supplierinfo_per_variant(cr, registry):
     """Duplicate supplierinfo for each product variant."""
     supp_info_obj = registry['product.supplierinfo']
